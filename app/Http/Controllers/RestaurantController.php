@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Restaurant;
+use App\Models\Customers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class RestaurantController extends Controller
 {
+    public function customerHome()
+    {
+        $restaurants = \App\Models\Restaurant::all();
+        return view('customer.berandaCustomer', compact('restaurants'));
+    }
+
     // Menampilkan form untuk memilih role
     public function showSelectRole()
     {
@@ -67,6 +74,7 @@ class RestaurantController extends Controller
         ]);
 
         Auth::login($user);
+
         return redirect()->route('customer.home');
 
     } elseif ($role === 'restaurant') {
@@ -99,12 +107,36 @@ class RestaurantController extends Controller
         $restaurant->categories()->attach($validated['categories']);
         Auth::login($user);
 
-        return redirect()->route('restaurant.home');
+        return redirect()->route('show_add_image');
     }
 
     return redirect()->route('home')->with('error', 'Invalid role selected.');
 }
-        
+
+    public function show_add_resto_pict(){
+        return view('resto.add_pict');
+    }
+
+    public function add_resto_pict(Request $request)
+    {
+        $validated = $request->validate([
+            'image_path' => 'required|string',
+        ]);
+    
+        $restaurant = Auth::user()->restaurant;
+
+        if ($restaurant) {
+        // Update path gambar ke tabel restaurants
+            $restaurant->update([
+                'image_path' => $validated['image_path'],  // Menyimpan path gambar yang dikirim
+            ]);
+
+            return redirect()->route('restaurant.home')->with('success', 'Gambar berhasil ditambahkan!');
+        }
+
+        return redirect()->route('restaurant.home')->with('error', 'Gagal menambahkan gambar!');
+    }
+
     // Menampilkan form login
     public function showLoginForm()
     {

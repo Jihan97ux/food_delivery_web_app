@@ -11,4 +11,9 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function restaurants()
+    {
+        return $this->belongsToMany(Restaurant::class, 'id');
+    }
 }

@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Restaurant extends Model
 {
-    protected $fillable = ['user_id', 'restaurant_name', 'phone', 'address'];
+    protected $fillable = ['user_id', 'restaurant_name', 'phone', 'address', 'image_path'];
 
     public function user()
     {
@@ -16,4 +16,10 @@ class Restaurant extends Model
     {
         return $this->belongsToMany(Category::class, 'category_restaurant');
     }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
 }

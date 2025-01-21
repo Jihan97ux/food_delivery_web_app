@@ -24,16 +24,16 @@ Route::get('/register', [RestaurantController::class, 'showRegistrationForm'])->
 // Proses registrasi
 Route::post('/register', [RestaurantController::class, 'register'])->name('register');
 
+Route::get('/show_add_image', [RestaurantController::class, 'show_add_resto_pict'])->name('show_add_image');
+Route::post('/add_image', [RestaurantController::class, 'add_resto_pict'])->name('add_image');
+
 // Form login
 Route::get('/login', [RestaurantController::class, 'showLoginForm'])->name('login');
 
 // Proses login
 Route::post('/login', [RestaurantController::class, 'login'])->name('login.submit');
 
-// Beranda untuk customer
-Route::get('/customer/home', function () {
-    return view('customer.berandaCustomer');
-})->name('customer.home')->middleware('auth');
+Route::get('/customer/home', [RestaurantController::class, 'customerHome'])->name('customer.home')->middleware('auth');
 
 // Beranda untuk restaurant
 Route::get('/restaurant/home', function () {
