@@ -302,4 +302,8 @@ class RestaurantController extends Controller
         $products = Product::where('restaurant_id', $id)->get();
         return view('customer.product_by_resto', compact('restaurant','products'));
     }
+
+    public function test(){
+        return view('customer.order');
+    }
 }

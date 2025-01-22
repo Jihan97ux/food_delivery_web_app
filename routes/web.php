@@ -52,6 +52,7 @@ Route::delete('/restaurant/products/{id}', [RestaurantController::class, 'delete
 // Route::post('/restaurant/products', [RestaurantController::class, 'storeProduct'])->name('products.store');
 
 Route::get('/customer/restaurant/{id}/products', [RestaurantController::class, 'viewProducts'])->name('customer.products');
+Route::get('/test', [RestaurantController::class, 'test'])->name('test');
 
 // Order Controller
 Route::post('/customer/order', [OrderController::class, 'create'])->name('customer.order');
