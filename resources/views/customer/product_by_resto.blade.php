@@ -47,12 +47,16 @@
                                 <!-- logika pengurangan stok tiap purchase perlu dijalankan -->
                                 <p class="info-stok text-xs text-gray-500">stok : {{ $product->stock }}</p>
                                 <div class="flex items-center gap-2">
-                                    <!-- logika input jumlah -->
-                                    <input id="quantity-{{ $product->id }}" type="number" value="1" min="1" max="{{ $product->stock }}" class="w-12 text-center border rounded-sm text-sm shadow-sm focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out hover:scale-105" />
                                     <!-- logika purchase ke order -->
-                                    <button class="bg-orange-500 text-white text-sm px-3.5 py-1 rounded-full shadow-md hover:bg-orange-600 hover:shadow-lg transition duration-300 ease-in-out">
-                                        Buy
-                                    </button>
+                                    <form action="{{ route('customer.order') }}" method="POST">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input id="quantity-{{ $product->id }}" type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="w-12 text-center border rounded-sm text-sm shadow-sm focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out hover:scale-105" />
+                                        <button type="submit" class="bg-orange-500 text-white text-sm px-3.5 py-1 rounded-full shadow-md hover:bg-orange-600 hover:shadow-lg transition duration-300 ease-in-out">
+                                            Buy
+                                        </button>
+                                    </form>
                                 </div>                                
                             </div>
                         </div>
