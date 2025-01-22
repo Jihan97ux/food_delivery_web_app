@@ -1,4 +1,4 @@
-<aside class="bg-orange-600 text-white w-36 h-full flex flex-col items-start p-5 space-y-5 rounded-tr-2xl rounded-br-2xl">
+<aside class="bg-orange-600 text-white w-36 h-screen fixed top-0 left-0 flex flex-col items-start p-5 space-y-5 rounded-tr-2xl rounded-br-2xl">
     <div class="mb-10 w-full">
         <img src="{{ asset('images/logo.JPG') }}" class="w-4/5 mx-auto">
     </div>

@@ -35,11 +35,18 @@ Route::post('/login', [RestaurantController::class, 'login'])->name('login.submi
 
 Route::get('/customer/home', [RestaurantController::class, 'customerHome'])->name('customer.home')->middleware('auth');
 
-// Beranda untuk restaurant
-Route::get('/restaurant/home', function () {
-    return view('resto.berandaResto');
-})->name('restaurant.home')->middleware('auth');
+Route::get('/restaurant/home', [RestaurantController::class, 'restaurantHome'])->name('restaurant.home')->middleware('auth');
 
 // Route untuk redirect ke penyedia di bagian register(login with)
 Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirect'])->name('socialite.redirect');
 Route::get('/auth/callback/{provider}', [SocialiteController::class, 'callback'])->name('socialite.callback');
+
+Route::get('/restaurant/products/add', [RestaurantController::class, 'addProductForm'])->name('products.add');
+Route::get('/restaurant/products/create', [RestaurantController::class, 'createProduct'])->name('products.create');
+Route::post('/restaurant/products/add', [RestaurantController::class, 'storeProduct'])->name('products.store');
+Route::get('/restaurant/products/edit/{id}', [RestaurantController::class, 'editProductForm'])->name('products.edit');
+Route::put('/restaurant/products/update/{id}', [RestaurantController::class, 'updateProduct'])->name('products.update');
+Route::delete('/restaurant/products/{id}', [RestaurantController::class, 'deleteProduct'])->name('products.destroy');
+Route::post('/restaurant/products', [RestaurantController::class, 'storeProduct'])->name('products.store');
+
+Route::get('/customer/restaurant/{id}/products', [RestaurantController::class, 'viewProducts'])->name('customer.products');
