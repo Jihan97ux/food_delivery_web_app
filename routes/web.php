@@ -47,7 +47,7 @@ Route::post('/restaurant/products/add', [RestaurantController::class, 'storeProd
 Route::get('/restaurant/products/edit/{id}', [RestaurantController::class, 'editProductForm'])->name('products.edit');
 Route::put('/restaurant/products/update/{id}', [RestaurantController::class, 'updateProduct'])->name('products.update');
 Route::delete('/restaurant/products/{id}', [RestaurantController::class, 'deleteProduct'])->name('products.destroy');
-Route::post('/restaurant/products', [RestaurantController::class, 'storeProduct'])->name('products.store');
+// Route::post('/restaurant/products', [RestaurantController::class, 'storeProduct'])->name('products.store');
 
 Route::get('/customer/restaurant/{id}/products', [RestaurantController::class, 'viewProducts'])->name('customer.products');
 Route::get('/test', [RestaurantController::class, 'test'])->name('test');

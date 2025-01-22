@@ -12,17 +12,15 @@
         <div class="bg-[#FFECE7] rounded-lg p-5 shadow-md flex items-start">
             <img src="chicken_burger.JPG" alt="Chicken Burger" class="w-32 h-30 rounded-lg mr-5">
             <div class="flex flex-col gap-2">
-                <h2 class="text-xl font-bold text-gray-800">Chicken Burger</h2>
+                <h2 class="text-xl font-bold text-gray-800">$product->name</h2>
                 <p class="text-sm text-gray-600 flex items-center">
                     <img src="{{ asset('images/waktu.png') }}" alt="Time Icon" class="w-4 h-4 mr-1"> 10-15 menit
                 </p>
-                <p class="text-lg text-gray-700">Rp 25.000</p>
+                <p class="text-lg text-gray-700">$product->price</p>
                 <div class="flex items-center gap-2">
-                    <button class="bg-[#FE724C] text-white rounded-lg py-1 px-3">-</button>
-                    <span>02</span>
-                    <button class="bg-[#FE724C] text-white rounded-lg py-1 px-3">+</button>
+                <span>jumlah order : $order_detai->quantity</span>
                 </div>
-                <p class="mt-2 text-lg text-gray-700">Total Pembayaran: Rp 50.000</p>
+                <p class="mt-2 text-lg text-gray-700">Total Pembayaran: Rp order->total</p>
                 <hr class="my-3">
                 <h4 class="text-sm text-gray-700">Ada lagi yang mau di beli?</h4>
                 <p class="text-sm text-gray-600">Bisa tambah menu lain, ya!</p>
@@ -33,8 +31,7 @@
         <!-- Right Top Box -->
         <div class="bg-[#FFECE7] rounded-lg p-5 shadow-md">
             <h3 class="text-lg font-semibold text-gray-800">Alamat Restaurant</h3>
-            <h1 class="text-xl font-bold text-gray-800">Jl. Teuku Nyak Arief</h1>
-            <h4 class="text-sm text-gray-600">Kebayoran Lama, South Jakarta City</h4>
+            <h4 class="text-sm text-gray-600">$restaurant->address</h4>
             <p class="text-sm text-gray-600 flex items-center mt-1">
                 <img src="{{ asset('images/jalan.png') }}" alt="Walking Icon" class="w-4 h-4 mr-1"> 10-15 menit
             </p>
