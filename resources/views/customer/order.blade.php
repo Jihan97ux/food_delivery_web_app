@@ -76,5 +76,16 @@
         <button class="bg-[#FE724C] text-white py-2 px-6 rounded-lg shadow-lg">Batalkan</button>
         <button class="bg-gray-400 text-white py-2 px-6 rounded-lg shadow-lg">Pesan Sekarang</button>
     </div>
+
+    <!-- Bodoh amat -->
+    <!DOCTYPE html>
+    <div class="bg-white shadow-lg rounded-lg p-8 max-w-md">
+        <h1 class="text-2xl font-bold mb-4">Order Summary</h1>
+        <p><strong>Product Name:</strong> {{ $orderDetails['product_name'] }}</p>
+        <p><strong>Quantity:</strong> {{ $orderDetails['quantity'] }}</p>
+        <p><strong>Price per Item:</strong> Rp.{{ number_format($orderDetails['product_price'], 0, ',', '.') }}</p>
+        <p><strong>Total Price:</strong> Rp.{{ number_format($orderDetails['total_price'], 0, ',', '.') }}</p>
+        <a href="{{ route('homepage') }}" class="block text-center mt-4 bg-orange-500 text-white py-2 rounded shadow hover:bg-orange-600">Go Back</a>
+    </div>
 </body>
 </html>
