@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Log;
 
 class RestaurantController extends Controller
 {
@@ -40,33 +41,57 @@ class RestaurantController extends Controller
         return view('resto.berandaResto', compact('restaurant', 'totalProfit', 'bestSellingProducts','categories'));
     }
 
-    // update resto profile
     public function updateRestaurantProfile(Request $request)
     {
+        // Validasi request
         $request->validate([
             'restaurant_name' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'address' => 'required|string',
-            'profile_photo' => 'nullable|image',
-            'restaurant_photo' => 'nullable|image'
+            'profile_photo' => 'nullable|image|max:2048', // Tambahkan batas ukuran file
+            'image_path' => 'required|string',
         ]);
-        $restaurant = Auth::user()->restaurant;
-        $restaurant->update([
-            'restaurant_name' => $request->restaurant_name,
-            'phone' => $request->phone,
-            'address' => $request->address
-        ]);
-        // Handle file upload for profile photo
-        if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $restaurant->profile_photo = $path;
+
+        try {
+            // Log data request untuk debug
+            Log::info('Update request received: ', $request->all());
+
+            // Ambil data restaurant dari user yang sedang login
+            $restaurant = Auth::user()->restaurant;
+
+            if (!$restaurant) {
+                Log::error('Restaurant profile not found for user ID: ' . Auth::id());
+                return redirect()->back()->withErrors('Restaurant profile not found.');
+            }
+
+            // Update restaurant details
+            $restaurant->update([
+                'restaurant_name' => $request->restaurant_name,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'image_path' => $request->image_path,
+            ]);
+
+            // Handle profile photo upload
+            if ($request->hasFile('profile_photo')) {
+                $path = $request->file('profile_photo')->store('profile_photos', 'public');
+                if ($path) {
+                    Log::info('Profile photo uploaded successfully: ' . $path);
+                    $restaurant->profile_photo = $path;
+                } else {
+                    Log::error('Failed to upload profile photo.');
+                }
+            }
+
+            // Save restaurant profile
+            $restaurant->save();
+            Log::info('Restaurant profile updated successfully: ', $restaurant->toArray());
+
+            return redirect()->route('restaurant.home')->with('success', 'Profile updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Update profile failed: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Failed to update profile. Please try again.');
         }
-        if ($request->hasFile('restaurant_photo')) {
-            $path = $request->file('restaurant_photo')->store('restaurant_photos', 'public');
-            $restaurant->restaurant_photo = $path;
-        }
-        $restaurant->save();
-        return redirect()->route('restaurant.home')->with('success', 'Profile updated successfully.');
     }
 
     // view untuk edit profile resto
@@ -76,18 +101,46 @@ class RestaurantController extends Controller
         return view('resto.editprofile-resto', compact('restaurant'));
     }
 
-    // delete restaurant
     public function deleteRestaurant($id)
     {
-        $restaurant = Restaurant::findOrFail($id);
-        // Lakukan logika penghapusan, misalnya menghapus foto terkait, dan lainnya
-        Storage::delete($restaurant->profile_photo);
-        Storage::delete($restaurant->restaurant_photo);
-        // Hapus restoran dari database
-        $restaurant->delete();
-        // Redirect ke halaman utama atau mana pun yang Anda inginkan dengan pesan sukses
-        return redirect()->route('home')->with('success', 'Restaurant deleted successfully.');
+        try {
+            // Cari restoran berdasarkan ID
+            $restaurant = Restaurant::findOrFail($id);
+
+            // Periksa apakah user memiliki hak untuk menghapus restoran ini
+            if (Auth::id() !== $restaurant->user_id) {
+                \Log::warning('Unauthorized delete attempt', [
+                    'auth_id' => Auth::id(),
+                    'restaurant_user_id' => $restaurant->user_id
+                ]);
+                return redirect()->route('home')->withErrors('You are not authorized to delete this restaurant.');
+            }
+
+            // Hapus file foto terkait jika ada
+            if ($restaurant->profile_photo && Storage::exists($restaurant->profile_photo)) {
+                Storage::delete($restaurant->profile_photo);
+            }
+
+            if ($restaurant->restaurant_photo && Storage::exists($restaurant->restaurant_photo)) {
+                Storage::delete($restaurant->restaurant_photo);
+            }
+
+            // Hapus restoran dari database
+            $restaurant->delete();
+
+            // Redirect dengan pesan sukses
+            return redirect()->route('home')->with('success', 'Restaurant deleted successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete restaurant', [
+                'error' => $e->getMessage(),
+                'restaurant_id' => $id
+            ]);
+
+            // Redirect dengan pesan error
+            return redirect()->route('home')->withErrors('Failed to delete the restaurant. Please try again later.');
+        }
     }
+
 
     // show order ke resto
     public function showOrders(){

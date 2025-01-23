@@ -53,26 +53,27 @@ class RegistrationController extends Controller
                 'date_of_birth' => 'required|date',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|confirmed',
-                // 'role' => 'required|in:customer,restaurant',
-
+                'profile_photo' => 'nullable|image|max:2048',
             ]);
-    
-            // Simpan data ke tabel `users`
+
             $user = User::create([
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'role' => 'customer',
             ]);
 
-            // Simpan detail ke tabel `customers`
-            $user->customer()->create([
+            $customer = $user->customer()->create([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'date_of_birth' => $validated['date_of_birth'],
             ]);
 
-            Auth::login($user);
+            if ($request->hasFile('profile_photo')) {
+                $path = $request->file('profile_photo')->store('profile_photos', 'public');
+                $customer->update(['profile_photo' => $path]);
+            }
 
+            Auth::login($user);
             return redirect()->route('customer.home');
 
         } elseif ($role === 'restaurant') {
@@ -84,23 +85,25 @@ class RegistrationController extends Controller
                 'categories' => 'required|array|min:1',
                 'categories.*' => 'exists:categories,id',
                 'password' => 'required|confirmed',
-                // 'role' => 'required|in:customer,restaurant',
+                'profile_photo' => 'nullable|image|max:2048',
             ]);
 
-            // Simpan data ke tabel `users`
             $user = User::create([
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
-                // 'role' => $validated['role'],
                 'role' => 'restaurant'
             ]);
 
-            // Simpan detail ke tabel `restaurants`
             $restaurant = $user->restaurant()->create([
                 'restaurant_name' => $validated['name'],
                 'phone' => $validated['phone'],
                 'address' => $validated['address'],
             ]);
+
+            if ($request->hasFile('profile_photo')) {
+                $path = $request->file('profile_photo')->store('restaurant_photos', 'public');
+                $restaurant->update(['restaurant_photo' => $path]);
+            }
 
             $restaurant->categories()->attach($validated['categories']);
             Auth::login($user);

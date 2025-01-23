@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Restaurant extends Model
 {
-    protected $fillable = ['user_id', 'restaurant_name', 'phone', 'address', 'image_path'];
+    protected $fillable = ['user_id', 'restaurant_name', 'phone', 'address','profile_photo','image_path'];
 
     public function user()
     {

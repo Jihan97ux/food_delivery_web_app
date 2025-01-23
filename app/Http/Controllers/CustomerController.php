@@ -46,12 +46,18 @@ class CustomerController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'date_of_birth' => 'required|date',
+            'profile_photo' => 'nullable|image',
         ]);
         $customer->update([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'date_of_birth' => $validated['date_of_birth'],
         ]);
+        if ($request->hasFile('profile_photo')) {
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $customer->profile_photo = $path;
+        }
+
         return redirect()->route('customer.home')->with('success', 'Profile updated successfully.');
     }
 
