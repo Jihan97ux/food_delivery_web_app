@@ -9,9 +9,9 @@
 </head>
 <body class="flex h-screen font-roboto">
     <div class="flex w-full">
-    @include('customer.sidebar')
+    @include('layouts.sidebar')
     <main class="ml-36 flex-1 bg-white flex flex-col p-10" style="background-image: url('{{ asset('images/background.jpg') }}'); background-size: 50% auto; background-position: calc(100% - 100px) center; background-repeat: no-repeat;">
-        @include('customer.navbar')
+        @include('layouts.navbar')
         <section class="main-section flex flex-col pl-8 bg-fixed bg-no-repeat bg-right-top">
             <div class="restaurant-temp flex gap-4 items-center mb-10">
                 @php

@@ -54,7 +54,7 @@
             <div class="mt-4">
                 <label class="flex items-center gap-2">
                     <input type="radio" name="payment-method" value="Card" class="h-5 w-5">
-                    <img src="{{ asset('images/Card.png') }}" alt="Card Icon" class="w-6 h-6"> Card
+                    <img src="{{ asset('images/Card.png') }}" alt="Card Icon" class="w-6 h-6"> Online Payment
                 </label>
                 <hr class="my-2">
                 <label class="flex items-center gap-2">
@@ -62,10 +62,6 @@
                     <img src="{{ asset('images/COD.png') }}" alt="COD Icon" class="w-6 h-6"> COD
                 </label>
                 <hr class="my-2">
-                <label class="flex items-center gap-2">
-                    <input type="radio" name="payment-method" value="Gopay" class="h-5 w-5">
-                    <img src="{{ asset('images/paypall.png') }}" alt="Gopay Icon" class="w-6 h-6"> Gopay
-                </label>
             </div>
         </div>
     </div>

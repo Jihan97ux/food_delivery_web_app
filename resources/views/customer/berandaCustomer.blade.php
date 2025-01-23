@@ -9,9 +9,9 @@
 </head>
 <body class="flex h-screen font-roboto">
 <div class="flex w-full">
-    @include('customer.sidebar')
+    @include('layouts.sidebar')
     <main class="ml-36 flex-1 bg-white flex flex-col p-10" style="background-image: url('{{ asset('images/background.jpg') }}'); background-size: 47% auto; background-position: calc(100% - 100px) center; background-repeat: no-repeat;">
-            @include('customer.navbar')
+            @include('layouts.navbar')
             <!-- Pop-up untuk alamat -->
             <div id="addressModal" class="fixed top-5 right-5 bg-white p-5 rounded-lg shadow-lg z-50">
                 <h3 class="text-lg mb-3">Masukkan Alamat Pemesanan</h3>
