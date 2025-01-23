@@ -1,5 +1,4 @@
 @extends('layouts.background')
-
 @section('content')
 <div class="max-w-xl w-full mx-auto p-2 bg-orange-400 rounded-lg shadow-lg text-center">
     <h1 class="text-xl font-bold text-white mt-1 mb-4">Add a New Product</h1>
