@@ -63,7 +63,7 @@
                             @foreach ($restaurants as $restaurant)
                             <a href="{{ route('customer.products', ['id' => $restaurant->id]) }}">
                                 <div class="restaurant-card scroll-snap-align start flex-shrink-0 bg-orange-100 rounded-lg shadow-md overflow-hidden flex flex-col items-center" data-address="{{ $restaurant->address }}" style="width: 20%; min-width: 300px;">
-                                    <img src="{{ asset('images/' . basename($restaurant->image_path)) }}" class="w-full h-1/2 object-cover object-top">
+                                    <img src="{{ asset('images/' . basename($restaurant->image_path)) }}" class="h-36 w-full rounded-t-xl object-cover">
                                     <div class="p-4 text-center">
                                         <h3 class="text-md font-semibold">{{ $restaurant->restaurant_name }}</h3>
                                         <p class="text-xs text-gray-500 mt-1">{{ $restaurant->address }}</p>

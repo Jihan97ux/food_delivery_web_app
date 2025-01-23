@@ -37,7 +37,7 @@
                 <div id="restaurant-container" class="flex overflow-x-auto scrollbar-hide gap-4 p-4 px-0" style="scroll-snap-type: x mandatory;">
                 @foreach ($products as $product)
                     <div class="food-card bg-orange-100 rounded-2xl shadow-md overflow-hidden flex flex-col">
-                        <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-auto" alt="{{ $product->name }}">
+                        <img src="{{ asset('storage/' . $product->image) }}" class="h-36 w-full rounded-t-xl object-cover" alt="{{ $product->name }}">
                         <div class="food-info p-5">
                             <div class="info-harga flex justify-between">
                                 <h3 class="text-sm">{{ $product->name }}</h3>
