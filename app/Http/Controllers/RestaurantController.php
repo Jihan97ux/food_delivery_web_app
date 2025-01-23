@@ -303,7 +303,22 @@ class RestaurantController extends Controller
         return view('customer.product_by_resto', compact('restaurant','products'));
     }
 
+    public function productByCategory(Request $request, $category_id){
+        $userAddress = $request->input('address'); // Ambil alamat dari input pengguna
+        $product_category = \App\Models\ProductCategory::find($category_id);
+
+        // Cari restoran yang memiliki alamat sesuai dengan input pengguna
+        $restaurants = \App\Models\Restaurant::where('address', $userAddress)->pluck('id');
+
+        // Ambil produk dari kategori ini yang hanya berasal dari restoran yang sesuai
+        $products = \App\Models\Product::where('category_id', $category_id)
+            ->whereIn('restaurant_id', $restaurants)
+            ->get();
+
+        return view('customer.product_by_category', compact('product_category', 'products', 'userAddress'));
+    }
+
     public function test(){
-        return view('customer.order');
+        return view('customer.confirmOrder');
     }
 }
