@@ -5,6 +5,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ErrorController;
+use App\Http\Controllers\SuccessController;
+use Illuminate\Support\Facades\Route;
+
 
 // Halaman Welcome
 Route::get('/', function () {
@@ -60,3 +64,16 @@ Route::get('/test', [CustomerController::class, 'test'])->name('test');
 Route::post('/customer/order', [OrderController::class, 'create'])->name('customer.order');
 // Route::post('/customer/category/{name}', [RestaurantController::class, 'select_category'])->name('select.category');
 Route::get('/customer/category/{category_id}/products', [CustomerController::class, 'productByCategory'])->name('category.products');//untuk product by category
+Route::get('/orderConfirmation', [OrderController::class, 'confirmOrder'])->name('order.confirmation');
+Route::post('/orderNow', [OrderController::class, 'orderNow'])->name('order.now');
+
+// Error umum
+Route::get('/error', [ErrorController::class, 'error'])->name('error');
+
+// Error pembayaran
+Route::get('/error-payment-unfinish', [ErrorController::class, 'errorPaymentUnfinish'])->name('error.payment-unfinish');
+Route::get('/error-payment-failed', [ErrorController::class, 'errorPaymentFailed'])->name('error.payment-failed');
+
+// Success
+Route::get('/handleSuccess', [SuccessController::class, 'handleSuccess'])->name('handle.success');
+Route::get('/success-payment', [SuccessController::class, 'successPayment'])->name('success.payment');
