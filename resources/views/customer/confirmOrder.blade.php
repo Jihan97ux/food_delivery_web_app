@@ -76,7 +76,19 @@
         <a href="{{ route('customer.home') }}" class="bg-[#FE724C] text-white py-2 px-6 rounded-lg shadow-lg">
             Batalkan
         </a>        
-        <button class="bg-gray-400 text-white py-2 px-6 rounded-lg shadow-lg">Pesan Sekarang</button>
+        <form action="{{ route('order.now') }}" method="POST">
+            @csrf
+            @method('POST')
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="quantity" value="{{ $order['quantity'] }}">
+            <input type="hidden" name="total" value="{{ $order['total'] }}">
+            <input type="hidden" name="payment_method" value="Card">
+            <input type="hidden" name="restaurant_id" value="{{ $restaurant->id }}">
+            <input type="hidden" name="address" value="{{ $restaurant->address }}">
+            <button type="submit" class="bg-[#FE724C] text-white py-2 px-6 rounded-lg shadow-lg">
+                Pesan Sekarang
+            </button>
+        </form>
     </div>
     
 </body>

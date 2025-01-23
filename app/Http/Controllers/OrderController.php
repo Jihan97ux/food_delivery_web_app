@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -79,6 +80,60 @@ class OrderController extends Controller
         $request->session()->forget('order');
 
         // Redirection vers la page souhaitée
-        return redirect()->route('test')->with('success', 'Order created successfully!');
+        return redirect()->route('success.payment');
+    }
+
+    // product_id ; quantity ; total ; restaurant_id
+    public function orderNow(Request $request)
+    {
+        // Store di session data Order + buka jendela midtrans
+
+        $validated = $request->validate([
+            'product_id' => 'required|integer|exists:product_tables,id',
+            'quantity' => 'required|integer|min:1',
+            'total' => 'required|numeric|min:1',
+            'restaurant_id' => 'required|integer|exists:restaurants,id',
+        ]);
+
+        // Menyimpan data pesanan ke sesi
+        $request->session()->put('order', [
+            'product_id' => $validated['product_id'],
+            'quantity' => $validated['quantity'],
+            'total' => $validated['total'],
+            'restaurant_id' => $validated['restaurant_id'],
+        ]);
+
+        $user_id = auth()->id();
+        if (!$user_id) {
+            return redirect()->route('login');
+        }
+
+        $customer_id = \App\Models\Customer::where('user_id', $user_id)->first()->id;
+        Log::info('customer_id: ' . $customer_id);
+        $customer = \App\Models\Customer::find($customer_id);
+        Log::info('customer: ' . $customer);
+        $user = \App\Models\User::find($user_id);
+        Log::info('user: ' . $user);
+
+        // Redirect ke halaman pembayaran
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => rand(),
+                'gross_amount' => $validated['total'],
+            ),
+            'customer_details' => array(
+                'first_name' => $customer->first_name,
+                'last_name' => $customer->last_name,
+                'email' => $user->email,
+            ),
+        );
+        
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        $snapUrl = \Midtrans\Snap::getSnapUrl($params);
+
+        Log::info('snapToken: ' . $snapToken);
+        Log::info('snapUrl: ' . $snapUrl);
+
+        return redirect($snapUrl);
     }
 }
