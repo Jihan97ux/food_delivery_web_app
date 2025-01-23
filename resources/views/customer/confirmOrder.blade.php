@@ -6,23 +6,23 @@
     <title>Payment Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-cover bg-center bg-no-repeat" style="background-image: url ('{{ asset('images/Background.png') }})'">
+<body class="bg-cover bg-center bg-no-repeat" style="background-image: url ('{{ asset('images/Background.png') }}')">
     <div class="max-w-7xl mx-auto p-5 grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
         <!-- Left Top Box -->
         <div class="bg-[#FFECE7] rounded-lg p-5 shadow-md flex items-start">
-            <img src="chicken_burger.JPG" alt="Chicken Burger" class="w-32 h-30 rounded-lg mr-5">
+            <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->name }}" class="w-32 h-30 rounded-lg mr-5">
             <div class="flex flex-col gap-2">
-                <h2 class="text-xl font-bold text-gray-800">$product->name</h2>
+                <h2 class="text-xl font-bold text-gray-800">{{ $product->name }}</h2>
                 <p class="text-sm text-gray-600 flex items-center">
                     <img src="{{ asset('images/waktu.png') }}" alt="Time Icon" class="w-4 h-4 mr-1"> 10-15 menit
                 </p>
-                <p class="text-lg text-gray-700">$product->price</p>
+                <p class="text-lg text-gray-700">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                 <div class="flex items-center gap-2">
-                <span>jumlah order : $order_detai->quantity</span>
+                    <span>Jumlah order: {{ $order['quantity'] }}</span>
                 </div>
-                <p class="mt-2 text-lg text-gray-700">Total Pembayaran: Rp order->total</p>
+                <p class="mt-2 text-lg text-gray-700">Total Pembayaran: Rp {{ number_format($order['total'], 0, ',', '.') }}</p>
                 <hr class="my-3">
-                <h4 class="text-sm text-gray-700">Ada lagi yang mau di beli?</h4>
+                <h4 class="text-sm text-gray-700">Ada lagi yang mau dibeli?</h4>
                 <p class="text-sm text-gray-600">Bisa tambah menu lain, ya!</p>
                 <button class="bg-[#FF5722] text-white rounded-lg py-2 px-5 mt-2">Tambah</button>
             </div>
@@ -31,7 +31,7 @@
         <!-- Right Top Box -->
         <div class="bg-[#FFECE7] rounded-lg p-5 shadow-md">
             <h3 class="text-lg font-semibold text-gray-800">Alamat Restaurant</h3>
-            <h4 class="text-sm text-gray-600">$restaurant->address</h4>
+            <h4 class="text-sm text-gray-600">{{ $restaurant->address }}</h4>
             <p class="text-sm text-gray-600 flex items-center mt-1">
                 <img src="{{ asset('images/jalan.png') }}" alt="Walking Icon" class="w-4 h-4 mr-1"> 10-15 menit
             </p>
@@ -54,17 +54,17 @@
             <div class="mt-4">
                 <label class="flex items-center gap-2">
                     <input type="radio" name="payment-method" value="Card" class="h-5 w-5">
-                    <img src="{{ asset('images/Card') }}.png" alt="Card Icon" class="w-6 h-6"> Card
+                    <img src="{{ asset('images/Card.png') }}" alt="Card Icon" class="w-6 h-6"> Card
                 </label>
                 <hr class="my-2">
                 <label class="flex items-center gap-2">
                     <input type="radio" name="payment-method" value="COD" class="h-5 w-5">
-                    <img src="{{ asset('images/COD') }}.png" alt="COD Icon" class="w-6 h-6"> COD
+                    <img src="{{ asset('images/COD.png') }}" alt="COD Icon" class="w-6 h-6"> COD
                 </label>
                 <hr class="my-2">
                 <label class="flex items-center gap-2">
                     <input type="radio" name="payment-method" value="Gopay" class="h-5 w-5">
-                    <img src="{{ asset('images/paypall') }}.png" alt="Gopay Icon" class="w-6 h-6"> Gopay
+                    <img src="{{ asset('images/paypall.png') }}" alt="Gopay Icon" class="w-6 h-6"> Gopay
                 </label>
             </div>
         </div>
@@ -73,7 +73,9 @@
     <!-- Footer -->
     <div class="flex justify-evenly py-5 max-w-7xl mx-auto">
         <button class="bg-[#FE724C] text-white py-2 px-6 rounded-lg shadow-lg">←</button>
-        <button class="bg-[#FE724C] text-white py-2 px-6 rounded-lg shadow-lg">Batalkan</button>
+        <a href="{{ route('customer.home') }}" class="bg-[#FE724C] text-white py-2 px-6 rounded-lg shadow-lg">
+            Batalkan
+        </a>        
         <button class="bg-gray-400 text-white py-2 px-6 rounded-lg shadow-lg">Pesan Sekarang</button>
     </div>
 </body>

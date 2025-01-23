@@ -9,9 +9,9 @@
 </head>
 <body class="flex h-screen font-roboto">
     <div class="flex w-full">
-    @include('layouts.sidebar')
+    @include('customer.sidebar')
     <main class="ml-36 flex-1 bg-white flex flex-col p-10" style="background-image: url('{{ asset('images/background.jpg') }}'); background-size: 50% auto; background-position: calc(100% - 100px) center; background-repeat: no-repeat;">
-        @include('layouts.navbar')
+        @include('customer.navbar')
         <section class="main-section flex flex-col pl-8 bg-fixed bg-no-repeat bg-right-top">
             <div class="restaurant-temp flex gap-4 items-center mb-10">
                 @php
@@ -47,12 +47,16 @@
                                 <!-- logika pengurangan stok tiap purchase perlu dijalankan -->
                                 <p class="info-stok text-xs text-gray-500">stok : {{ $product->stock }}</p>
                                 <div class="flex items-center gap-2">
-                                    <!-- logika input jumlah -->
-                                    <input id="quantity-{{ $product->id }}" type="number" value="1" min="1" max="{{ $product->stock }}" class="w-12 text-center border rounded-sm text-sm shadow-sm focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out hover:scale-105" />
                                     <!-- logika purchase ke order -->
-                                    <button class="bg-orange-500 text-white text-sm px-3.5 py-1 rounded-full shadow-md hover:bg-orange-600 hover:shadow-lg transition duration-300 ease-in-out">
-                                        Buy
-                                    </button>
+                                    <form action="{{ route('customer.order') }}" method="POST">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input id="quantity-{{ $product->id }}" type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="w-12 text-center border rounded-sm text-sm shadow-sm focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out hover:scale-105" />
+                                        <button type="submit" class="bg-orange-500 text-white text-sm px-3.5 py-1 rounded-full shadow-md hover:bg-orange-600 hover:shadow-lg transition duration-300 ease-in-out">
+                                            Buy
+                                        </button>
+                                    </form>
                                 </div>                                
                             </div>
                         </div>

@@ -9,9 +9,9 @@
 </head>
 <body class="flex h-screen font-roboto">
 <div class="flex w-full">
-    @include('layouts.sidebar')
+    @include('customer.sidebar')
     <main class="ml-36 flex-1 bg-white flex flex-col p-10" style="background-image: url('{{ asset('images/background.jpg') }}'); background-size: 47% auto; background-position: calc(100% - 100px) center; background-repeat: no-repeat;">
-            @include('layouts.navbar')
+            @include('customer.navbar')
             <!-- Pop-up untuk alamat -->
             <div id="addressModal" class="fixed top-5 right-5 bg-white p-5 rounded-lg shadow-lg z-50">
                 <h3 class="text-lg mb-3">Masukkan Alamat Pemesanan</h3>
@@ -27,10 +27,12 @@
             <section class="main-section flex flex-col pl-8 bg-fixed bg-no-repeat bg-right-top">
                 <h1 class="text-4xl text-gray-700 p-15 mb-7"><b>What would you like to order</b></h1>
                 <div class="flex gap-6 mb-7">
-                    <button class="flex flex-col items-center bg-white text-gray-600 w-20 h-36 rounded-full shadow-md hover:bg-orange-500 hover:text-white transition duration-300">
+                    <a 
+                        href="{{ route('category.products', ['category_id' => 12]) }}" 
+                        class="category-link flex flex-col items-center bg-white text-gray-600 w-20 h-36 rounded-full shadow-md hover:bg-orange-500 hover:text-white transition duration-300">
                         <img src="{{ asset('images/burger.JPG') }}" class="w-full h-auto mb-2 rounded-full p-1">
-                        <h4 class="text-sm">Fast Food</h4>
-                    </button>
+                        <h4 class="text-sm">Junk Food</h4>
+                    </a>
                     <button class="flex flex-col items-center bg-white text-gray-600 w-20 h-36 rounded-full shadow-md hover:bg-orange-500 hover:text-white transition duration-300">
                         <img src="{{ asset('images/donut.JPG') }}" class="w-full h-auto mb-2 rounded-full p-1">
                         <h4 class="text-sm">Sweets</h4>
@@ -137,6 +139,20 @@
             addressModal.classList.remove('hidden');
             addressButton.classList.add('hidden');
             addressInput.value = localStorage.getItem('userAddress') || '';
+        });
+
+        document.querySelectorAll('.category-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const address = localStorage.getItem('userAddress');
+                if (!address) {
+                    alert('Silakan masukkan alamat terlebih dahulu.');
+                    return;
+                }
+                const url = new URL(this.href);
+                url.searchParams.append('address', address);
+                window.location.href = url.toString();
+            });
         });
 
     </script>

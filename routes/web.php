@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\OrderController;
 
 // Halaman Welcome
 Route::get('/', function () {
@@ -49,5 +50,10 @@ Route::put('/restaurant/products/update/{id}', [RestaurantController::class, 'up
 Route::delete('/restaurant/products/{id}', [RestaurantController::class, 'deleteProduct'])->name('products.destroy');
 // Route::post('/restaurant/products', [RestaurantController::class, 'storeProduct'])->name('products.store');
 
-Route::get('/customer/restaurant/{id}/products', [RestaurantController::class, 'viewProducts'])->name('customer.products');
+Route::get('/customer/restaurant/{id}/products', [RestaurantController::class, 'viewProducts'])->name('customer.products');//untuk product by resto
 Route::get('/test', [RestaurantController::class, 'test'])->name('test');
+
+// Order Controller
+Route::post('/customer/order', [OrderController::class, 'create'])->name('customer.order');
+// Route::post('/customer/category/{name}', [RestaurantController::class, 'select_category'])->name('select.category');
+Route::get('/customer/category/{category_id}/products', [RestaurantController::class, 'productByCategory'])->name('category.products');//untuk product by category
