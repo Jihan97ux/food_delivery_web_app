@@ -78,5 +78,6 @@
         </a>        
         <button class="bg-gray-400 text-white py-2 px-6 rounded-lg shadow-lg">Pesan Sekarang</button>
     </div>
+    
 </body>
 </html>

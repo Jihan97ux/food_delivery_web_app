@@ -28,9 +28,9 @@ class RestaurantController extends Controller
 
     public function processRoleSelection(Request $request)
     {
-    $role = $request->role;
-    // Asumsikan Anda ingin mengarahkan pengguna ke form pendaftaran yang sesuai dengan role
-    return redirect()->route('register.form', ['role' => $role]);
+        $role = $request->role;
+        // Asumsikan Anda ingin mengarahkan pengguna ke form pendaftaran yang sesuai dengan role
+        return redirect()->route('register.form', ['role' => $role]);
     }
 
     // Menampilkan form pendaftaran berdasarkan role
@@ -70,53 +70,54 @@ class RestaurantController extends Controller
             ]);
 
             // Simpan detail ke tabel `customers`
-        $user->customer()->create([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'date_of_birth' => $validated['date_of_birth'],
-        ]);
+            $user->customer()->create([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'date_of_birth' => $validated['date_of_birth'],
+            ]);
 
-        Auth::login($user);
+            Auth::login($user);
 
-        return redirect()->route('customer.home');
+            return redirect()->route('customer.home');
 
-    } elseif ($role === 'restaurant') {
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required',
-            'address' => 'required',
-            'categories' => 'required|array|min:1',
-            'categories.*' => 'exists:categories,id',
-            'password' => 'required|confirmed',
-            // 'role' => 'required|in:customer,restaurant',
-        ]);
+        } elseif ($role === 'restaurant') {
+            $validated = $request->validate([
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'required',
+                'address' => 'required',
+                'categories' => 'required|array|min:1',
+                'categories.*' => 'exists:categories,id',
+                'password' => 'required|confirmed',
+                // 'role' => 'required|in:customer,restaurant',
+            ]);
 
-        // Simpan data ke tabel `users`
-        $user = User::create([
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            // 'role' => $validated['role'],
-            'role' => 'restaurant'
-        ]);
+            // Simpan data ke tabel `users`
+            $user = User::create([
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                // 'role' => $validated['role'],
+                'role' => 'restaurant'
+            ]);
 
-        // Simpan detail ke tabel `restaurants`
-        $restaurant = $user->restaurant()->create([
-            'restaurant_name' => $validated['name'],
-            'phone' => $validated['phone'],
-            'address' => $validated['address'],
-        ]);
+            // Simpan detail ke tabel `restaurants`
+            $restaurant = $user->restaurant()->create([
+                'restaurant_name' => $validated['name'],
+                'phone' => $validated['phone'],
+                'address' => $validated['address'],
+            ]);
 
-        $restaurant->categories()->attach($validated['categories']);
-        Auth::login($user);
+            $restaurant->categories()->attach($validated['categories']);
+            Auth::login($user);
 
-        return redirect()->route('show_add_image');
+            return redirect()->route('show_add_image');
+        }
+
+        return redirect()->route('home')->with('error', 'Invalid role selected.');
     }
 
-    return redirect()->route('home')->with('error', 'Invalid role selected.');
-}
-
-    public function show_add_resto_pict(){
+    public function show_add_resto_pict()
+    {
         return view('resto.add_pict');
     }
 
@@ -204,15 +205,17 @@ class RestaurantController extends Controller
             $categories = ProductCategory::all();
         return view('resto.berandaResto', compact('restaurant', 'totalProfit', 'bestSellingProducts','categories'));
     }
-        public function createProduct(){
-            // Pastikan hanya restoran yang dapat mengakses
-            if (!Auth::check() || Auth::user()->role !== 'restaurant') {
-                return redirect()->route('login')->with('error', 'Unauthorized action.');
-            }
-            // Ambil kategori produk untuk dropdown
-            $categories = \App\Models\ProductCategory::all();
-            return view('resto.create-product', compact('categories'));
+
+    public function createProduct(){
+        // Pastikan hanya restoran yang dapat mengakses
+        if (!Auth::check() || Auth::user()->role !== 'restaurant') {
+            return redirect()->route('login')->with('error', 'Unauthorized action.');
         }
+        // Ambil kategori produk untuk dropdown
+        $categories = \App\Models\ProductCategory::all();
+        return view('resto.create-product', compact('categories'));
+    }
+
     public function storeProduct(Request $request)
     {
         // Pastikan user adalah restoran
@@ -251,12 +254,14 @@ class RestaurantController extends Controller
         $product->save();
         return redirect()->route('restaurant.home')->with('success', 'Product added successfully.');
     }
+
     public function editProductForm($id)
     {
         $product = Product::findOrFail($id);
         $categories = \App\Models\ProductCategory::all();
         return view('resto.edit-product', compact('product','categories'));
     }
+
     public function updateProduct(Request $request, $id)
     {
         $validated = $request->validate([
@@ -282,6 +287,7 @@ class RestaurantController extends Controller
         $product->save();
         return redirect()->route('restaurant.home')->with('success', 'Product updated successfully.');
     }
+    
     public function deleteProduct($id)
     {
         $product = Product::findOrFail($id);
