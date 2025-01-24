@@ -17,28 +17,34 @@ use Illuminate\Support\Facades\Log;
 class RestaurantController extends Controller
 {
 
-    public function restaurantHome(){
+    public function restaurantHome()
+    {
         $restaurant = Auth::user()->restaurant;
+
         if (!$restaurant) {
             // Redirect user atau tampilkan pesan error jika tidak ada data restoran
             return redirect()->route('home')->withErrors('No restaurant data found for the current user.');
         }
-        // Mengambil total pendapatan dengan lebih efisien
-        $totalProfit = $restaurant->orders()->with('orderDetails')
-            ->get()
-            ->reduce(function ($carry, $order) {
-                return $carry + $order->orderDetails->sum('total');
-            }, 0);
+
+        // Menghitung total profit langsung di query database
+        $totalProfit = DB::table('orders')
+            ->join('order_detail', 'orders.id', '=', 'order_detail.order_id')
+            ->where('orders.restaurant_id', $restaurant->id)
+            ->sum(DB::raw('order_detail.price * order_detail.quantity'));
+
         // Mengambil produk terlaris dengan lebih efisien
         $bestSellingProducts = $restaurant->products()
             ->withCount(['orderDetails as sales' => function ($query) {
-                $query->select(\DB::raw("SUM(quantity)"));
+                $query->select(DB::raw("SUM(quantity)"));
             }])
             ->orderBy('sales', 'desc')
             ->take(4)
             ->get();
-            $categories = ProductCategory::all();
-        return view('resto.berandaResto', compact('restaurant', 'totalProfit', 'bestSellingProducts','categories'));
+
+        // Mengambil semua kategori produk
+        $categories = ProductCategory::all();
+
+        return view('resto.berandaResto', compact('restaurant', 'totalProfit', 'bestSellingProducts', 'categories'));
     }
 
     public function updateRestaurantProfile(Request $request)
@@ -142,35 +148,40 @@ class RestaurantController extends Controller
     }
 
 
-    // show order ke resto
-    public function showOrders(){
+    public function showOrders()
+    {
         $user = Auth::user();
-        if($user->role !== 'restaurant'){
-            return redirect()->route('home')->with('error','Unauthorized acces');
+        if ($user->role !== 'restaurant') {
+            return redirect()->route('home')->with('error', 'Unauthorized access');
         }
 
         $restaurant = $user->restaurant;
+
+        // Fetch odd dates
         $oddDates = DB::table('order_detail')
-        ->select(DB::raw('Date(created_at) as date'))
-        ->whereRaw('DAY(created_at) % 2 = 1')
-        ->groupBy('date')
-        ->pluck('date');
+            ->select(DB::raw('DATE(created_at) as date'))
+            ->whereRaw('DAY(created_at) % 2 = 1')
+            ->groupBy('date')
+            ->pluck('date');
+
+        // Fetch even dates
         $evenDates = DB::table('order_detail')
-        ->select(DB::raw('DATE(created_at) as date'))
-        ->whereRaw('DAY(created_at) % 2 = 0')
-        ->groupBy('date')
-        ->pluck('date');
+            ->select(DB::raw('DATE(created_at) as date'))
+            ->whereRaw('DAY(created_at) % 2 = 0')
+            ->groupBy('date')
+            ->pluck('date');
+
+        // Fetch last order and customer
         $lastOrder = DB::table('orders')
-        ->join('customers', 'customers.user_id', '=', 'orders.customer_id')
-        ->join('users', 'users.id', '=', 'orders.customer_id')
-        ->selectRaw("CONCAT(customers.first_name, ' ', customers.last_name) as name, customers.profile_photo, orders.created_at as order_date, orders.id")
-        ->orderByDesc('orders.created_at')
-        ->first();
+            ->join('customers', 'customers.user_id', '=', 'orders.customer_id')
+            ->join('users', 'users.id', '=', 'orders.customer_id')
+            ->selectRaw("CONCAT(customers.first_name, ' ', customers.last_name) as name, customers.profile_photo, orders.created_at as order_date, orders.id")
+            ->orderByDesc('orders.created_at')
+            ->first();
+
         $lastCustomer = null;
-    if ($lastOrder) 
-        {
-            $lastCustomer = (object) 
-            [
+        if ($lastOrder) {
+            $lastCustomer = (object) [
                 'name' => $lastOrder->name,
                 'profile_photo' => $lastOrder->profile_photo,
                 'order_date' => $lastOrder->order_date,
@@ -181,7 +192,9 @@ class RestaurantController extends Controller
                     ->get(),
             ];
         }
-        return view('resto.orderResto', compact('restaurant','oddDates', 'evenDates', 'lastCustomer'));
+
+        return view('resto.orderResto', compact('restaurant', 'oddDates', 'evenDates', 'lastCustomer'));
     }
+
 
 }
